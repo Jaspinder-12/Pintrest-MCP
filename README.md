@@ -34,14 +34,6 @@ python src/server.py
 ## 4. MCP Manifest Configuration
 To connect this server directly to Cursor, Cline, or Claude Code, add the following configuration to your `mcp_config.json`:
 
-```json
-{
-  "mcpServers": {
-    "pinterest": {
-      "command": "python",
-      "args": ["C:/Users/Jass2/.gemini/antigravity-ide/scratch/pinterest-mcp/src/server.py"]
-    }
-  }
 }
 ```
 
