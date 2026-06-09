@@ -1,0 +1,22 @@
+{
+  "server": {
+    "name": "pinterest-visual-mcp",
+    "version": "1.0.0",
+    "description": "Visual RAG and design curation engine bridging AI agents and Pinterest graphs",
+    "transports": ["stdio", "sse"]
+  },
+  "security": {
+    "allowed_redirect_uris": [
+      "http://localhost:8000/v1/auth/callback"
+    ],
+    "token_expiration_seconds": 86400
+  },
+  "rate_limiting": {
+    "mcp_requests_per_minute": 120,
+    "scrape_limit_per_hour": 30
+  },
+  "connections": {
+    "core_api_endpoint": "http://localhost:8000",
+    "timeout_ms": 10000
+  }
+}

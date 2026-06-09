@@ -1,0 +1,74 @@
+# .github/workflows/ci.yml
+#
+# Purpose:
+# Pull request and push workflow validation checking code quality.
+#
+# Dependencies:
+# GitHub Actions runner
+#
+# Usage:
+# Run: Triggered on git push/pull actions.
+#
+# Notes:
+# Validates both node workspaces and Python FastAPI pipelines.
+#
+# Future Improvements:
+# - Add end-to-end container integration testing
+
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-workspace:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python Runtime Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry dependencies manager
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Cache poetry virtual environments
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Code Formatting check (Black)
+        run: poetry run black --check .
+
+      - name: Code Linting check (Ruff)
+        run: poetry run ruff check .
+
+      - name: Type checking check (Mypy)
+        run: poetry run mypy .
+
+      - name: Run Test Suites
+        run: poetry run pytest --cov=services/core-api --cov-report=xml
+
+# ============================================
+# FUTURE IMPROVEMENTS
+# ============================================
+#
+# 1. Automate security alerts vulnerabilities parsing
+# 2. Automatically generate test coverage reports badge
+#
+# ============================================

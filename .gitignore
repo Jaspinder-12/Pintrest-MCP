@@ -1,0 +1,27 @@
+# Python temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Local environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.log
+
+# Docker caches
+.docker/
+
+# IDE files
+.vscode/
+.idea/
+.cursor/

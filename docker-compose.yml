@@ -1,0 +1,43 @@
+# docker-compose.yml
+#
+# Purpose:
+# Spins up the minimal Pinterest MCP Server in a container.
+#
+# Dependencies:
+# Docker & Docker Compose
+#
+# Usage:
+# Run: docker compose up --build
+#
+# Notes:
+# Build and runs the FastMCP server inside the container.
+# Keeps stdin open so the STDIO-based server doesn't exit.
+#
+# Future Improvements:
+# - Mount host directories for local certificate sharing
+#
+
+version: '3.8'
+
+services:
+  pinterest-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pinterest_mcp
+    image: pinterest-mcp:latest
+    stdin_open: true
+    tty: true
+    environment:
+      - ENV=development
+    ports:
+      - "8000:8000"
+
+# ============================================
+# FUTURE IMPROVEMENTS
+# ============================================
+#
+# 1. Integrate reverse proxy setups (Nginx/Caddy)
+# 2. Add health check definitions
+#
+# ============================================

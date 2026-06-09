@@ -1,0 +1,28 @@
+{
+  "name": "pinterest-mcp-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo configuration for Pinterest Visual MCP server and auxiliary services",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint \"**/*.ts\"",
+    "start": "node packages/mcp-server/dist/index.js",
+    "dev": "nodemon --watch \"packages/**/*.ts\" --exec \"ts-node\" packages/mcp-server/src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "eslint": "^8.52.0",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}

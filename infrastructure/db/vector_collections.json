@@ -1,0 +1,48 @@
+{
+  "collections": [
+    {
+      "name": "image_embeddings",
+      "vector_size": 768,
+      "distance_metric": "Cosine",
+      "index_type": "HNSW",
+      "payload_indexes": {
+        "aesthetic_score": "float",
+        "primary_color": "keyword",
+        "design_category": "keyword"
+      },
+      "description": "SigLIP representations of pin images for semantic search and reverse image matching."
+    },
+    {
+      "name": "board_embeddings",
+      "vector_size": 768,
+      "distance_metric": "Cosine",
+      "index_type": "HNSW",
+      "payload_indexes": {
+        "user_id": "keyword",
+        "board_name": "text"
+      },
+      "description": "Visual centroids representing the aggregated style vector profile of individual boards."
+    },
+    {
+      "name": "style_embeddings",
+      "vector_size": 768,
+      "distance_metric": "Cosine",
+      "index_type": "HNSW",
+      "payload_indexes": {
+        "style_family": "keyword"
+      },
+      "description": "Standard anchor reference points for target design languages (e.g. Glassmorphism, Japandi)."
+    },
+    {
+      "name": "trend_embeddings",
+      "vector_size": 768,
+      "distance_metric": "Cosine",
+      "index_type": "HNSW",
+      "payload_indexes": {
+        "trend_vertical": "keyword",
+        "growth_phase": "keyword"
+      },
+      "description": "Aggregated vectors tracking weekly design trend shifts."
+    }
+  ]
+}

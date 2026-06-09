@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # Relational Metadata DB
+  postgres:
+    image: postgres:15-alpine
+    container_name: mcp_postgres
+    environment:
+      POSTGRES_USER: mcp_admin
+      POSTGRES_PASSWORD: mcp_secure_password_2026
+      POSTGRES_DB: pinterest_mcp_prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../infrastructure/db/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mcp_admin -d pinterest_mcp_prod"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mcp_network
+
+  # Vector Database for SigLIP / CLIP embeddings
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: mcp_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcp_network
+
+  # Queue Broker & Caching Layer
+  redis:
+    image: redis:7-alpine
+    container_name: mcp_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcp_network
+
+  # Visual Core API (FastAPI + Vision ML Models)
+  core-api:
+    image: pinterest-mcp/core-api:latest
+    build:
+      context: ../services/core-api
+      dockerfile: Dockerfile
+    container_name: mcp_core_api
+    environment:
+      - DATABASE_URL=postgresql://mcp_admin:mcp_secure_password_2026@postgres:5432/pinterest_mcp_prod
+      - QDRANT_URL=http://qdrant:6333
+      - REDIS_URL=redis://redis:6379/0
+      - CUDA_VISIBLE_DEVICES=0
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - mcp_network
+
+  # Async ML pipeline workers (Celery)
+  worker:
+    image: pinterest-mcp/core-api:latest
+    build:
+      context: ../services/core-api
+      dockerfile: Dockerfile
+    container_name: mcp_celery_worker
+    command: celery -A tasks worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://mcp_admin:mcp_secure_password_2026@postgres:5432/pinterest_mcp_prod
+      - QDRANT_URL=http://qdrant:6333
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - postgres
+      - qdrant
+    networks:
+      - mcp_network
+
+networks:
+  mcp_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  qdrant_data:
+  redis_data:
