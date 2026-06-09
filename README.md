@@ -32,11 +32,17 @@ python src/server.py
 ```
 
 ## 4. MCP Manifest Configuration
-To connect this server directly to Cursor, Cline, or Claude Code, add the following configuration to your `mcp_config.json`:
+To connect this server directly to Cursor, Cline, or Claude Code, add the following configuration to your `mcp_config.json` (replacing the placeholder with your actual cloned repository path):
 
+```json
+{
+  "mcpServers": {
+    "pinterest": {
+      "command": "python",
+      "args": ["/path/to/your/Pintrest-MCP/src/server.py"]
+    }
+  }
 }
 ```
 
 ---
-
-
