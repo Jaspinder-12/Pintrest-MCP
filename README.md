@@ -5,7 +5,7 @@
 * **Module**: README.md
 * **Purpose**: Installation guide, local running, and usage workflows.
 * **Dependencies**: Python 3.12+, httpx, BeautifulSoup, FastMCP
-* **Author**: Core Dev Team
+* **Author**: Jaspinder Singh
 * **Notes**: Simple bridge for AI agents to query Pinterest designs.
 ---
 
