@@ -47,11 +47,4 @@ To connect this server directly to Cursor, Cline, or Claude Code, add the follow
 
 ---
 
-# ============================================
-# FUTURE IMPROVEMENTS
-# ============================================
-#
-# 1. Integrate dynamic HTTP proxy rotation to bypass scrapers blocking
-# 2. Add local SQLite caching layer for search queries
-#
-# ============================================
+
